@@ -56,7 +56,7 @@ function addItem() {
         packaging: parseFloat(document.getElementById("packagingCost").value) || 0,
         delivery: parseFloat(document.getElementById("deliveryCost").value) || 0,
         marketing: parseFloat(document.getElementById("marketingCost").value) || 0,
-        other: currentOther
+        other: currentOther || []  // Fix: ensure other is always an array
     };
 
     if (!item.name) {
@@ -74,7 +74,7 @@ function addItem() {
 
 // Calculate item total
 function itemTotal(item) {
-    const otherTotal = item.other.reduce((sum, o) => sum + o.amount, 0);
+    const otherTotal = (item.other || []).reduce((sum, o) => sum + o.amount, 0); // Fix here
     return item.import + item.packaging + item.delivery + item.marketing + otherTotal;
 }
 
@@ -85,6 +85,8 @@ function renderItems() {
     let grand = 0;
 
     items.forEach((item) => {
+        // Ensure other is always an array (for old items from Firebase)
+        if (!item.other) item.other = [];
         const total = itemTotal(item);
         grand += total;
 
@@ -115,7 +117,8 @@ function loadItems() {
     firebase.database().ref("users/" + userId + "/items").get()
         .then((snapshot) => {
             if (snapshot.exists()) {
-                items = snapshot.val();
+                // Fix: ensure every loaded item has other as an array
+                items = snapshot.val().map(item => ({ ...item, other: item.other || [] }));
                 renderItems();
             }
         })
