@@ -56,7 +56,7 @@ function addItem() {
         packaging: parseFloat(document.getElementById("packagingCost").value) || 0,
         delivery: parseFloat(document.getElementById("deliveryCost").value) || 0,
         marketing: parseFloat(document.getElementById("marketingCost").value) || 0,
-        other: currentOther || []  // Fix: ensure other is always an array
+        other: currentOther || []
     };
 
     if (!item.name) {
@@ -74,25 +74,37 @@ function addItem() {
 
 // Calculate item total
 function itemTotal(item) {
-    const otherTotal = (item.other || []).reduce((sum, o) => sum + o.amount, 0); // Fix here
+    const otherTotal = (item.other || []).reduce((sum, o) => sum + o.amount, 0);
     return item.import + item.packaging + item.delivery + item.marketing + otherTotal;
 }
 
-// Render all items
+// Render all items with delete buttons
 function renderItems() {
     const list = document.getElementById("itemList");
     list.innerHTML = "";
     let grand = 0;
 
-    items.forEach((item) => {
-        // Ensure other is always an array (for old items from Firebase)
+    items.forEach((item, index) => {
         if (!item.other) item.other = [];
         const total = itemTotal(item);
         grand += total;
 
         const li = document.createElement("li");
-        li.innerHTML = `<strong>${item.name}</strong> → LKR ${total.toFixed(2)}`;
+        li.innerHTML = `
+            <strong>${item.name}</strong> → LKR ${total.toFixed(2)}
+            <button onclick="deleteItem(${index})">Delete Item</button>
+            <ul id="other-${index}"></ul>
+        `;
         list.appendChild(li);
+
+        // Render Other Expenses with delete buttons
+        const otherList = document.getElementById(`other-${index}`);
+        item.other.forEach((o, oIndex) => {
+            const oli = document.createElement("li");
+            oli.innerHTML = `${o.name}: LKR ${o.amount} 
+                             <button onclick="deleteOther(${index}, ${oIndex})">Delete</button>`;
+            otherList.appendChild(oli);
+        });
     });
 
     document.getElementById("grandTotal").innerText = `Grand Total: LKR ${grand.toFixed(2)}`;
@@ -107,6 +119,25 @@ function clearInputs() {
     document.getElementById("marketingCost").value = "";
 }
 
+// Delete a full item
+function deleteItem(index) {
+    if (confirm(`Are you sure you want to delete "${items[index].name}"?`)) {
+        items.splice(index, 1);
+        renderItems();
+        saveItems();
+    }
+}
+
+// Delete a specific "Other Expense"
+function deleteOther(itemIndex, otherIndex) {
+    const otherName = items[itemIndex].other[otherIndex].name;
+    if (confirm(`Delete "${otherName}" from this item?`)) {
+        items[itemIndex].other.splice(otherIndex, 1);
+        renderItems();
+        saveItems();
+    }
+}
+
 // Save all items to Firebase
 function saveItems() {
     firebase.database().ref("users/" + userId + "/items").set(items);
@@ -117,7 +148,6 @@ function loadItems() {
     firebase.database().ref("users/" + userId + "/items").get()
         .then((snapshot) => {
             if (snapshot.exists()) {
-                // Fix: ensure every loaded item has other as an array
                 items = snapshot.val().map(item => ({ ...item, other: item.other || [] }));
                 renderItems();
             }
