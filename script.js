@@ -101,14 +101,14 @@ function renderItems() {
         const otherList = document.getElementById(`other-${index}`);
         item.other.forEach((o, oIndex) => {
             const oli = document.createElement("li");
-            oli.innerHTML = `${o.name}: LKR ${o.amount} 
-                             <button onclick="deleteOther(${index}, ${oIndex})">Delete</button>`;
+            oli.innerHTML = `${o.name}: LKR ${o.amount} <button onclick="deleteOther(${index}, ${oIndex})">Delete</button>`;
             otherList.appendChild(oli);
         });
     });
 
     document.getElementById("grandTotal").innerText = `Grand Total: LKR ${grand.toFixed(2)}`;
 }
+
 
 // Clear input fields
 function clearInputs() {
