@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Item Expense Tracker</title>
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+    <script>
+        // Your Firebase config
+        const firebaseConfig = {
+            apiKey: "AIzaSyB1kDurtcOsyvcPP7kIuRY9Bz_fAREALRk",
+            authDomain: "expensetracker-1f1a9.firebaseapp.com",
+            databaseURL: "https://expensetracker-1f1a9-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "expensetracker-1f1a9",
+            storageBucket: "expensetracker-1f1a9.firebasestorage.app",
+            messagingSenderId: "859931632616",
+            appId: "1:859931632616:web:a82214213bf101c7833a5d",
+            measurementId: "G-3158H7Z1WH"
+        };
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+    </script>
+
+
+</head>
+
+<body>
+
+    <button id="loginBtn">Login with Google</button>
+    <h3 id="userEmail"></h3>
+
+
+    <div class="container">
+        <h2>Add Item Expenses</h2>
+
+        <input id="itemName" placeholder="Item name">
+
+        <input id="importCost" type="number" placeholder="Import cost">
+        <input id="packagingCost" type="number" placeholder="Packaging cost">
+        <input id="deliveryCost" type="number" placeholder="Delivery cost">
+        <input id="marketingCost" type="number" placeholder="Marketing cost">
+
+        <h4>Other Expenses</h4>
+        <input id="otherName" placeholder="Expense name">
+        <input id="otherAmount" type="number" placeholder="Amount">
+        <button onclick="addOther()">Add Other Expense</button>
+
+        <ul id="otherList"></ul>
+
+        <button class="add-item" onclick="addItem()">Add Item</button>
+
+        <hr>
+
+        <h3>Items</h3>
+        <ul id="itemList"></ul>
+
+        <h2 id="grandTotal">Grand Total: LKR 0.00</h2>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

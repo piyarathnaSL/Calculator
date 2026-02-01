@@ -1,0 +1,34 @@
+body {
+    font-family: Arial, sans-serif;
+    background: #f2f2f2;
+}
+
+.container {
+    max-width: 420px;
+    background: #fff;
+    padding: 20px;
+    margin: 20px auto;
+    border-radius: 10px;
+}
+
+input,
+button {
+    width: 100%;
+    padding: 8px;
+    margin: 5px 0;
+}
+
+button {
+    background: #000;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+
+.add-item {
+    background: #007bff;
+}
+
+ul {
+    padding-left: 15px;
+}
